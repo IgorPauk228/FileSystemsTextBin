@@ -12,6 +12,9 @@
 //3)Программа, если пользователь не указал формат, сама его дописывает по контексту
 
 
+//заполняет ячейки структуры Student_book кроме number
+void fill_sb(char[20],std::string&,char,size_t&);
+
 //Функции формирования бинарных файлов на основе исходных
 //Формирования бинарника зачеток
 //Пользователь передает имя файла с зачетками и имя для нового файла
@@ -25,6 +28,7 @@ void create_bin_marks(const std::string& stud_marks, const std::string& bin_name
 //Пользователь передает имя файлов с зачетками и оценками и имена 2-х новых файлов
 void create_bin(const std::string& stud_books, const std::string& stud_marks, 
                 const std::string& bin_name_book = "student_book.bin", const std::string& bin_name_mark = "student_mark.bin");
+
 
 //Функция подсоединения фамилий студентов к их оценкам
 //Формируется новый файл(пользователь сам выбирает название)  
