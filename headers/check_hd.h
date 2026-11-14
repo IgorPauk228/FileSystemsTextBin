@@ -22,7 +22,5 @@ void open_input_file(std::ofstream& fin, const std::string& filename);
 //Проверка на открытие(fstream)
 void open_input_file(std::fstream& fin, const std::string& filename);
 
-//Проверка на принадлежность файла к классу бинарных
-bool is_bin(const std::string& filename);
 
 #endif
