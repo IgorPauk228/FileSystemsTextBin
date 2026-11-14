@@ -16,11 +16,10 @@ bool is_empty(const std::string& filename);
 //Проверка на открытие(ifstream)
 void open_input_file(std::ifstream& fin, const std::string& filename);
 
-//Проверка на открытие(ofstream)
-void open_input_file(std::ofstream& fin, const std::string& filename);
-
 //Проверка на открытие(fstream)
 void open_input_file(std::fstream& fin, const std::string& filename);
 
+//Проверка на открытие(ofstream)
+void open_input_file(std::ofstream& fin, const std::string& filename);
 
 #endif
