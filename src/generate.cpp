@@ -105,9 +105,9 @@ void genere_marks(const std::string& books_file = "student_book.txt", const std:
 
         fout << std::to_string(rand_int(1, 7)) << ';';
         fout << buff.substr(0, 5) << ';';
-        fout << "МА" << std::to_string(rand_int(1, 10)) << ';';
-        fout << "ГЕО" << std::to_string(rand_int(1, 10)) << ';';
-        fout << "ПРОГ" << std::to_string(rand_int(1, 10)) << '\n';
+        fout << "МА" << ';' << std::to_string(rand_int(1, 10)) << ';';
+        fout << "ГЕО" << ';' << std::to_string(rand_int(1, 10)) << ';';
+        fout << "ПРОГ" << ';' << std::to_string(rand_int(1, 10)) << '\n';
 
     }
     fout.close();
