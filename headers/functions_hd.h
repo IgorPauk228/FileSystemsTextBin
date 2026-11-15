@@ -11,9 +11,11 @@
 //2)Названия новых файлов задаются как параметры по умолчанию
 //3)Программа, если пользователь не указал формат, сама его дописывает по контексту
 
+//заполняет числовые поля структур Student_book/Student_book_marks 
+void fill_sb(size_t& info,std::string& temp,char delim,size_t& beg);
 
-//заполняет ячейки структуры Student_book кроме number
-void fill_sb(char[20],std::string&,char,size_t&);
+//заполняет поля-строки структур Student_book/Student_book_marks 
+void fill_sb(char(&)[20],std::string&,char,size_t&);
 
 //Функции формирования бинарных файлов на основе исходных
 //Формирования бинарника зачеток
