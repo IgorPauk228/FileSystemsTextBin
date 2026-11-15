@@ -25,10 +25,12 @@ bool is_empty(const std::string& filename){
 void open_input_file(std::ifstream& fin, const std::string& filename){
     fin.open(filename);
     if (!fin.is_open()){
-        throw "Can't open file: " + filename + "\n"; 
+        std::string msg = "Can't open file: " + filename + "\n";
+        throw msg;
     }
     if (fin.fail()){
-        throw "Error with open file: " + filename + "\n";
+        std::string msg = "Error with open file: " + filename + "\n";
+        throw msg;
     }
 
     std::cout << "File " << filename << " succesfully opened\n";
@@ -38,10 +40,12 @@ void open_input_file(std::ifstream& fin, const std::string& filename){
 void open_input_file(std::fstream& fin, const std::string& filename){
     fin.open(filename);
     if (!fin.is_open()){
-        throw "Can't open file: " + filename + "\n"; 
+        std::string msg = "Can't open file: " + filename + "\n";
+        throw msg;
     }
     if (fin.fail()){
-        throw "Error with open file: " + filename + "\n";
+        std::string msg = "Error with open file: " + filename + "\n";
+        throw msg;
     }
 
     std::cout << "File " << filename << " succesfully opened\n";
@@ -51,10 +55,12 @@ void open_input_file(std::fstream& fin, const std::string& filename){
 void open_input_file(std::ofstream& fin, const std::string& filename){
     fin.open(filename);
     if (!fin.is_open()){
-        throw "Can't open file: " + filename + "\n"; 
+        std::string msg = "Can't open file: " + filename + "\n";
+        throw msg;
     }
     if (fin.fail()){
-        throw "Error with open file: " + filename + "\n";
+        std::string msg = "Error with open file: " + filename + "\n";
+        throw msg;
     }
 
     std::cout << "File " << filename << " succesfully opened\n";
