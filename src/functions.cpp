@@ -4,6 +4,7 @@
 #include <string>
 #include <cstring>
 #include <check_hd.h>
+#include "../headers/functions_hd.h"
 //Сами функции
 //Замечания(далее не оговаривается):
 //1)Если файл уже существует, то он перезаписывается с нуля
@@ -56,7 +57,7 @@ struct Student_book_marks
 //Функции формирования бинарных файлов на основе исходных
 //Формирования бинарника зачеток
 //Пользователь передает имя файла с зачетками и имя для нового файла
-void create_bin_books(const std::string& stud_books, const std::string& bin_name = "student_book.bin")
+void create_bin_books(const std::string& stud_books, const std::string& bin_name /*= "student_book.bin"*/)
 {
     Student_book student_book;
     std::ifstream fin(stud_books);
@@ -80,7 +81,7 @@ void create_bin_books(const std::string& stud_books, const std::string& bin_name
 }
 //Формирование бинарника с оценками
 //Пользователь передает имя файла с оценками и имя для нового файла
-void create_bin_marks(const std::string& stud_marks, const std::string& bin_name = "student_mark.bin")
+void create_bin_marks(const std::string& stud_marks, const std::string& bin_name /*= "student_mark.bin"*/)
 {
     Student_book_marks student_marks;
     std::ifstream fin(stud_marks);
@@ -108,7 +109,7 @@ void create_bin_marks(const std::string& stud_marks, const std::string& bin_name
 //Функция формирования 2-х бинарников
 //Пользователь передает имя файлов с зачетками и оценками и имена 2-х новых файлов
 void create_bin(const std::string& stud_books, const std::string& stud_marks, 
-                const std::string& bin_name_book = "student_book.bin", const std::string& bin_name_mark = "student_mark.bin")
+                const std::string& bin_name_book /*= "student_book.bin"*/, const std::string& bin_name_mark /*= "student_mark.bin"*/)
 {
     create_bin_books(stud_books);
     create_bin_marks(stud_marks);
@@ -118,19 +119,19 @@ void create_bin(const std::string& stud_books, const std::string& stud_marks,
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарников с зачетками и оценками, название нового файла           
 void add_surnames(const std::string& stud_books, const std::string& stud_marks, 
-                const std::string& new_bin_name = "students_data.bin");
+                const std::string& new_bin_name /*= "students_data.bin"*/);
 
 
 //Функция вычисления среднего балла студента
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void add_avg_score(const std::string& stud_data, const std::string& new_bin_name = "average_score.bin");
+void add_avg_score(const std::string& stud_data, const std::string& new_bin_name /*= "average_score.bin*/);
 
 
 //Функция формирования списка неуспевающих
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void list_of_undr_achv(const std::string& stud_data, const std::string& new_bin_name = "under_achievment_list.bin");
+void list_of_undr_achv(const std::string& stud_data, const std::string& new_bin_name /*= "under_achievment_list.bin"*/);
 
 
 //Функция сортировки 
@@ -147,23 +148,23 @@ void print_norm_sort(const std::string& und_data, const std::string& sort_und_da
 //Функция формирования ведомости по алфавиту
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_stats(const std::string& stud_data, const std::string& new_bin_name = "stats_sort_lex.bin");
+void create_stats(const std::string& stud_data, const std::string& new_bin_name /*= "stats_sort_lex.bin"*/);
 
 
 //Функция формирования ведомости по среднему баллу(возрастание)
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_sorted_stats(const std::string& stud_data, const std::string& new_bin_name = "stats_sort_score.bin");
+void create_sorted_stats(const std::string& stud_data, const std::string& new_bin_name /*= "stats_sort_score.bin"*/);
 
 
 //Функция формирования ведомости по среднему баллу(убывание)
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_rev_sorted_stats(const std::string& stud_data, const std::string& new_bin_name = "stats_revsort_score.bin");
+void create_rev_sorted_stats(const std::string& stud_data, const std::string& new_bin_name /*= "stats_revsort_score.bin"*/);
 
 
 //Функция формирования списка отличников
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_exlnts_list(const std::string& stud_data, const std::string& new_bin_name = "exelent_list.bin");
+void create_exlnts_list(const std::string& stud_data, const std::string& new_bin_name /*= "exelent_list.bin"*/);
 
