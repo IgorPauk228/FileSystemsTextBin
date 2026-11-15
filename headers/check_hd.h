@@ -22,4 +22,13 @@ void open_input_file(std::fstream& fin, const std::string& filename);
 //Проверка на открытие(ofstream)
 void open_input_file(std::ofstream& fin, const std::string& filename);
 
+//Проверка потока(fstream)
+void check_stream(std::fstream& fin, const std::string& filename);
+
+//Проверка потока(ifstream)
+void check_stream(std::ifstream& fin, const std::string& filename);
+
+//Проверка потока(ofstream)
+void check_stream(std::ofstream& fin, const std::string& filename);
+
 #endif

@@ -21,7 +21,7 @@ bool is_empty(const std::string& filename){
     return file.tellg() == 0;
 }
 
-//Проверка на открытие(ifstream)
+//Открытие файла(ifstream)
 void open_input_file(std::ifstream& fin, const std::string& filename){
     fin.open(filename);
     if (!fin.is_open()){
@@ -36,7 +36,7 @@ void open_input_file(std::ifstream& fin, const std::string& filename){
     std::cout << "File " << filename << " succesfully opened\n";
 }
 
-//Проверка на открытие(fstream)
+//Открытие файла(fstream)
 void open_input_file(std::fstream& fin, const std::string& filename){
     fin.open(filename);
     if (!fin.is_open()){
@@ -51,7 +51,7 @@ void open_input_file(std::fstream& fin, const std::string& filename){
     std::cout << "File " << filename << " succesfully opened\n";
 }
 
-//Проверка на открытие(ofstream)
+//Открытие файла(ofstream)
 void open_input_file(std::ofstream& fin, const std::string& filename){
     fin.open(filename);
     if (!fin.is_open()){
@@ -66,3 +66,44 @@ void open_input_file(std::ofstream& fin, const std::string& filename){
     std::cout << "File " << filename << " succesfully opened\n";
 }
 
+//Проверка потока(ifstream)
+void check_stream(std::ifstream& fin, const std::string& filename){
+    if (!fin.is_open()){
+        std::string msg = "Can't open file: " + filename + "\n";
+        throw msg;
+    }
+    if (fin.fail()){
+        std::string msg = "Error with open file: " + filename + "\n";
+        throw msg;
+    }
+
+    std::cout << "File " << filename << " succesfully opened\n";
+}
+
+//Проверка потока(ofstream)
+void check_stream(std::ofstream& fin, const std::string& filename){
+    if (!fin.is_open()){
+        std::string msg = "Can't open file: " + filename + "\n";
+        throw msg;
+    }
+    if (fin.fail()){
+        std::string msg = "Error with open file: " + filename + "\n";
+        throw msg;
+    }
+
+    std::cout << "File " << filename << " succesfully opened\n";
+}
+
+//Проверка потока(fstream)
+void check_stream(std::fstream& fin, const std::string& filename){
+    if (!fin.is_open()){
+        std::string msg = "Can't open file: " + filename + "\n";
+        throw msg;
+    }
+    if (fin.fail()){
+        std::string msg = "Error with open file: " + filename + "\n";
+        throw msg;
+    }
+
+    std::cout << "File " << filename << " succesfully opened\n";
+}

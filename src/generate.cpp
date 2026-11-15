@@ -50,7 +50,7 @@ void genere_stdnts_list(const fios_set& fios, uint32_t size, const std::string& 
     std::ofstream fout(filename);
 
     //Проверка на открытие
-    //open_input_file(fout, filename);
+    check_stream(fout, filename);
 
     uint32_t min_num = 45000;
     uint32_t delta = 3;
@@ -79,9 +79,12 @@ void genere_marks(const std::string& books_file /*= "student_book.txt"*/, const 
     std::ofstream fout(marks_file);
 
     //Блок проверок
-    is_empty(books_file);
-    //open_input_file(fin, books_file);
-    //open_input_file(fout, marks_file);
+    if (is_empty(books_file)){
+        throw "Students book is empty";
+    }
+    check_stream(fin, books_file);
+    check_stream(fout, marks_file);
+    
 
 
     std::string buff;
