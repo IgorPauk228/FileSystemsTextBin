@@ -10,7 +10,7 @@
 void file_exists(const std::string& filename){
     std::ifstream fin(filename);
     if (!fin.good()){
-        throw "File not exists";
+        throw "File " + filename + " not exists\n";
     }
 }
 
@@ -25,38 +25,38 @@ bool is_empty(const std::string& filename){
 void open_input_file(std::ifstream& fin, const std::string& filename){
     fin.open(filename);
     if (!fin.is_open()){
-        throw "Can't open file"; 
+        throw "Can't open file: " + filename + "\n"; 
     }
     if (fin.fail()){
-        throw "Error with open file";
+        throw "Error with open file: " + filename + "\n";
     }
 
-    std::cout << "File succesfully opened\n";
+    std::cout << "File " << filename << " succesfully opened\n";
 }
 
 //Проверка на открытие(fstream)
 void open_input_file(std::fstream& fin, const std::string& filename){
     fin.open(filename);
     if (!fin.is_open()){
-        throw "Can't open file"; 
+        throw "Can't open file: " + filename + "\n"; 
     }
     if (fin.fail()){
-        throw "Error with open file";
+        throw "Error with open file: " + filename + "\n";
     }
 
-    std::cout << "File succesfully opened";
+    std::cout << "File " << filename << " succesfully opened\n";
 }
 
 //Проверка на открытие(ofstream)
 void open_input_file(std::ofstream& fin, const std::string& filename){
     fin.open(filename);
     if (!fin.is_open()){
-        throw "Can't open file"; 
+        throw "Can't open file: " + filename + "\n"; 
     }
     if (fin.fail()){
-        throw "Error with open file";
+        throw "Error with open file: " + filename + "\n";
     }
 
-    std::cout << "File succesfully opened";
+    std::cout << "File " << filename << " succesfully opened\n";
 }
 
