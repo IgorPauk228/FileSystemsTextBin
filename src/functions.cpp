@@ -2,27 +2,117 @@
 #include <cstdint>
 #include <fstream>
 #include <string>
-
+#include <cstring>
+#include <check_hd.h>
 //Сами функции
 //Замечания(далее не оговаривается):
 //1)Если файл уже существует, то он перезаписывается с нуля
 //2)Названия новых файлов задаются как параметры по умолчанию
 //3)Программа, если пользователь не указал формат, сама его дописывает по контексту
 
+//заполняет числовые поля структур Student_book/Student_book_marks 
+void fill_sb(size_t& info,std::string& temp,char delim,size_t& beg)
+{
+    size_t end = temp.find_first_of(delim,beg);
+    if(end == std::string::npos)
+    {
+        end = temp.length();
+    }
+    info = stoi(temp.substr(beg,end-beg));
+    beg = ++end;
+}
+
+//заполняет поля-строки структур Student_book/Student_book_marks 
+void fill_sb(char(&info)[20],std::string& temp,char delim,size_t& beg)
+{
+        size_t end = temp.find_first_of(delim,beg);
+        if(end == std::string::npos)
+        {
+            end = temp.length();
+        }
+        std::string part = temp.substr(beg,end-beg);
+        strcpy(info,part.c_str());
+        beg = ++end;
+}
+
+//структурка для зачетки
+struct Student_book
+{
+    size_t number;
+    char surname[20];
+    char name[20];
+    char second_name[20];
+};
+
+//структурка для оценок
+struct Student_book_marks
+{
+    size_t groop;
+    size_t number;
+    char subj[3][20];
+    size_t marks[3];
+};
 
 //Функции формирования бинарных файлов на основе исходных
 //Формирования бинарника зачеток
 //Пользователь передает имя файла с зачетками и имя для нового файла
-void create_bin_books(const std::string& stud_books, const std::string& bin_name = "student_book.bin");
-
+void create_bin_books(const std::string& stud_books, const std::string& bin_name = "student_book.bin")
+{
+    Student_book student_book;
+    std::ifstream fin(stud_books);
+    char delim = ';';
+    file_exists(stud_books);
+    is_empty(stud_books);
+    open_input_file(fin,stud_books);
+    std::string temp{};
+    std::ofstream bin_out(bin_name,std::ios::binary);
+    while(std::getline(fin,temp))
+    {
+        size_t beg = 0;
+        fill_sb(student_book.number,temp,delim,beg);
+        fill_sb(student_book.surname,temp,delim,beg);
+        fill_sb(student_book.name,temp,delim,beg);
+        fill_sb(student_book.second_name,temp,delim,beg);
+        bin_out.write((char*)&student_book,sizeof(student_book));
+    }
+    bin_out.close();
+    fin.close();
+}
 //Формирование бинарника с оценками
 //Пользователь передает имя файла с оценками и имя для нового файла
-void create_bin_marks(const std::string& stud_marks, const std::string& bin_name = "student_mark.bin");
-
+void create_bin_marks(const std::string& stud_marks, const std::string& bin_name = "student_mark.bin")
+{
+    Student_book_marks student_marks;
+    std::ifstream fin(stud_marks);
+    char delim = ';';
+    file_exists(stud_marks);
+    is_empty(stud_marks);
+    open_input_file(fin,stud_marks);
+    std::string temp{};
+    std::ofstream bin_out(bin_name,std::ios::binary);
+    while(std::getline(fin,temp))
+    {
+        size_t beg = 0;
+        fill_sb(student_marks.groop,temp,delim,beg);
+        fill_sb(student_marks.number,temp,delim,beg);
+        for(size_t i = 0;i < 3;++i)
+        {
+            fill_sb(student_marks.subj[i],temp,delim,beg);
+            fill_sb(student_marks.marks[i],temp,delim,beg);
+        }
+        bin_out.write((char*)&student_marks,sizeof(student_marks));
+    }
+    bin_out.close();
+    fin.close();
+}
 //Функция формирования 2-х бинарников
 //Пользователь передает имя файлов с зачетками и оценками и имена 2-х новых файлов
 void create_bin(const std::string& stud_books, const std::string& stud_marks, 
-                const std::string& bin_name_book = "student_book.bin", const std::string& bin_name_mark = "student_mark.bin");
+                const std::string& bin_name_book = "student_book.bin", const std::string& bin_name_mark = "student_mark.bin")
+{
+    create_bin_books(stud_books);
+    create_bin_marks(stud_marks);
+}
 
 //Функция подсоединения фамилий студентов к их оценкам
 //Формируется новый файл(пользователь сам выбирает название)  
