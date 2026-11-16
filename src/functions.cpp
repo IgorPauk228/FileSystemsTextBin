@@ -182,7 +182,80 @@ bool is_underachieving(const Student_book_marks& marks_data) {
 //Функция сортировки 
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника неуспевающих, название нового файла
-void sort_underscored(const std::string& und_data, const std::string& new_bin_name = "sorted_und_achieve.bin");
+void sort_underscored(const std::string& und_data, const std::string& new_bin_name = "sorted_und_achieve.bin")
+{
+    try {
+        file_exists(und_data);
+
+        // если файл пустой, то мы просто создаем пустой выходной файл и выходим
+        if (is_empty(und_data)) {
+            std::ofstream fout;
+            fout.open(new_bin_name, std::ios::binary);
+            check_stream(fout, new_bin_name);
+            fout.close();
+            return;
+        }
+
+        std::ifstream fin;
+        fin.open(und_data, std::ios::binary);
+        check_stream(fin, und_data);
+
+        // Определяем размер файлика
+        fin.seekg(0, std::ios::end);
+        std::streamsize file_size = fin.tellg();
+        fin.seekg(0, std::ios::beg);
+
+        const size_t pair_size = sizeof(Student_book) + sizeof(Student_book_marks);
+        size_t count = static_cast<size_t>(file_size) / pair_size;
+
+        // Выделяем два динамических массива
+        Student_book* books = new Student_book[count];
+        Student_book_marks* marks_arr = new Student_book_marks[count];
+
+        // Читаем данные
+        for (size_t i = 0; i < count; ++i) {
+            fin.read(reinterpret_cast<char*>(&books[i]), sizeof(Student_book));
+            fin.read(reinterpret_cast<char*>(&marks_arr[i]), sizeof(Student_book_marks));
+        }
+        fin.close();
+
+        // Сортировка пузырьком по фамилии (одновременно переставляем в обоих массивах)
+        for (size_t i = 0; i < count - 1; ++i) {
+            for (size_t j = 0; j < count - i - 1; ++j) {
+                if (std::strcmp(books[j].surname, books[j + 1].surname) > 0) {
+                    // Меняем местами данные зачетки
+                    Student_book temp_book = books[j];
+                    books[j] = books[j + 1];
+                    books[j + 1] = temp_book;
+
+                    // Синхронно меняем местами данные об оценках
+                    Student_book_marks temp_marks = marks_arr[j];
+                    marks_arr[j] = marks_arr[j + 1];
+                    marks_arr[j + 1] = temp_marks;
+                }
+            }
+        }
+
+        // Записываем отсортированные данные
+        std::ofstream fout;
+        fout.open(new_bin_name, std::ios::binary);
+        check_stream(fout, new_bin_name);
+
+        for (size_t i = 0; i < count; ++i) {
+            fout.write(reinterpret_cast<const char*>(&books[i]), sizeof(Student_book));
+            fout.write(reinterpret_cast<const char*>(&marks_arr[i]), sizeof(Student_book_marks));
+        }
+        fout.close();
+
+        // Освобождаем память
+        delete[] books;
+        delete[] marks_arr;
+
+    }
+    catch (const std::string& e) {
+        std::cerr << e;
+    }
+}
 
 
 //Функция печати до сортировки и после
