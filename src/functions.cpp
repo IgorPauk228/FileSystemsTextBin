@@ -4,6 +4,7 @@
 #include <string>
 #include <cstring>
 #include <check_hd.h>
+#include <cctype>
 #include "../headers/functions_hd.h"
 //Сами функции
 //Замечания(далее не оговаривается):
@@ -36,23 +37,7 @@ void fill_sb(char(&info)[20],std::string& temp,char delim,size_t& beg)
         beg = ++end;
 }
 
-//структурка для зачетки
-struct Student_book
-{
-    size_t number;
-    char surname[20];
-    char name[20];
-    char second_name[20];
-};
 
-//структурка для оценок
-struct Student_book_marks
-{
-    size_t groop;
-    size_t number;
-    char subj[3][20];
-    size_t marks[3];
-};
 
 //Функции формирования бинарных файлов на основе исходных
 //Формирования бинарника зачеток
@@ -94,7 +79,7 @@ void create_bin_marks(const std::string& stud_marks, const std::string& bin_name
     while(std::getline(fin,temp))
     {
         size_t beg = 0;
-        fill_sb(student_marks.groop,temp,delim,beg);
+        fill_sb(student_marks.group,temp,delim,beg);
         fill_sb(student_marks.number,temp,delim,beg);
         for(size_t i = 0;i < 3;++i)
         {
@@ -144,11 +129,48 @@ void sort_underscored(const std::string& und_data, const std::string& new_bin_na
 //Аргументы функции - название бинарника неуспевающих и его отсортированной версии
 void print_norm_sort(const std::string& und_data, const std::string& sort_und_data);
 
+//Лексикографический компаратор
+int alphabet_comp(const void* a, const void* b){
+    Student_data pa = *(const Student_data*)(a);
+    Student_data pb = *(const Student_data*)(b);
+    return std::strcmp(pa.surname, pb.surname);
+}
 
-//Функция формирования ведомости по алфавиту
+//Сортировка бинарника группы по алфавиту
+void alphabet_sort(const std::string& filename, uint32_t size){
+    std::ifstream fin(filename, std::ios::binary);
+    Student_data* std_arr = new Student_data[size];
+    Student_data std_data;
+
+    uint32_t counter = 0;
+    
+    while (fin.read(reinterpret_cast<char*>(&std_data), sizeof(Student_data)) && counter < size){
+        std_arr[counter++] = std_data;
+    }
+
+    qsort(std_arr, size, sizeof(Student_data), alphabet_comp);
+}
+
+//Функция формирования ведомости по алфавиту для группы
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_stats(const std::string& stud_data, const std::string& new_bin_name /*= "stats_sort_lex.bin"*/);
+void create_stats(const std::string& stud_data, const std::string& new_bin_name /*= "stats_sort_lex.bin"*/,
+                    size_t group_number){
+    std::ofstream fout(new_bin_name, std::ios::binary);
+    std::ifstream fin(stud_data, std::ios::binary);
+
+    uint32_t size = 0;
+    Student_data std_data;
+
+    while (fin.read(reinterpret_cast<char*>(&std_data), sizeof(Student_data))){
+        if (std_data.group == group_number){
+            fout.write(reinterpret_cast<char*>(&std_data), sizeof(Student_data));
+            ++size;
+        }
+    }
+    
+    alphabet_sort(new_bin_name, size);
+}
 
 
 //Функция формирования ведомости по среднему баллу(возрастание)
