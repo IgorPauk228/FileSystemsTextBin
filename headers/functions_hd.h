@@ -11,6 +11,24 @@
 //2)Названия новых файлов задаются как параметры по умолчанию
 //3)Программа, если пользователь не указал формат, сама его дописывает по контексту
 
+//структурка для зачетки
+struct Student_book
+{
+    size_t number;
+    char surname[20];
+    char name[20];
+    char second_name[20];
+};
+
+//структурка для оценок
+struct Student_book_marks
+{
+    size_t groop;
+    size_t number;
+    char subj[3][20];
+    size_t marks[3];
+};
+
 //заполняет числовые поля структур Student_book/Student_book_marks 
 void fill_sb(size_t& info,std::string& temp,char delim,size_t& beg);
 

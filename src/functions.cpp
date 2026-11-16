@@ -36,24 +36,6 @@ void fill_sb(char(&info)[20],std::string& temp,char delim,size_t& beg)
         beg = ++end;
 }
 
-//структурка для зачетки
-struct Student_book
-{
-    size_t number;
-    char surname[20];
-    char name[20];
-    char second_name[20];
-};
-
-//структурка для оценок
-struct Student_book_marks
-{
-    size_t groop;
-    size_t number;
-    char subj[3][20];
-    size_t marks[3];
-};
-
 //Функции формирования бинарных файлов на основе исходных
 //Формирования бинарника зачеток
 //Пользователь передает имя файла с зачетками и имя для нового файла
