@@ -107,3 +107,23 @@ void check_stream(std::fstream& fin, const std::string& filename){
 
     std::cout << "File " << filename << " succesfully opened\n";
 }
+
+void check_and_add_extension(std::string& filename) {
+    std::size_t len = filename.length();
+
+    // достаточная ли длинна строка, чтоб содержать наше расширение
+    // надо минимум 4 символа:)
+    if (len >= 4) {
+        // возьмем последние 4 символа строчки
+        std::string ext = filename.substr(len - 4);
+
+        // если у нас строчка заканчивается на .bin или .txt, то всё ок, ничего делать не надо
+        if (ext == ".bin" || ext == ".txt") {
+            return;
+        }
+    }
+
+    // если подходящего расширения нет, добавляем .txt 
+    // (если нужно .bin, просто заменим наше ".txt" на ".bin")
+    filename += ".txt";
+}
