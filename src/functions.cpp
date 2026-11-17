@@ -268,8 +268,19 @@ void print_norm_sort(const std::string& und_data, const std::string& sort_und_da
         }
 
         std::cout << '\n' << '\t' << "ОТСОРТИРОВАННЫЙ список по неуспеваемости" << '\t' << '\n';
+}
 
-        file_exists(sort_und_data);
+//Сортировка бинарника группы по алфавиту
+void alphabet_sort(const std::string& filename, uint32_t size){
+    file_exists(filename);
+    std::ifstream fin(filename, std::ios::binary);
+    if (is_empty(filename)){
+        throw "Students book is empty";
+    }
+    check_stream(fin, filename);
+
+    Student_data* std_arr = new Student_data[size];
+    Student_data std_data;
 
         if (!is_empty(sort_und_data)) {
             std::ifstream fin2;
@@ -280,23 +291,15 @@ void print_norm_sort(const std::string& und_data, const std::string& sort_und_da
             Student_book_marks marks;
             int num = 1;
 
-            while (fin2.read(reinterpret_cast<char*>(&book), sizeof(Student_book)) &&
-                fin2.read(reinterpret_cast<char*>(&marks), sizeof(Student_book_marks))) {
+    qsort(std_arr, size, sizeof(Student_data), alphabet_comp);
 
-                std::cout << num++ << ". " << book.surname << " " << book.name << " " << book.second_name
-                    << " | Зач. книжка: " << book.number
-                    << " | Группа: " << marks.groop << '\n';
-                std::cout << "   Оценки: ";
-                for (size_t i = 0; i < 3; ++i) {
-                    std::cout << marks.subj[i] << ": " << marks.marks[i] << "  ";
-                }
-                std::cout << '\n';
-            }
-            fin2.close();
-        }
-        else {
-            std::cout << "Файл пуст или не найден." << '\n';
-        }
+    std::ofstream fout(filename, std::ios::binary);
+    check_stream(fout, filename);
+    for (uint32_t i; i < size; ++i){
+        fout.write(reinterpret_cast<char*>(&std_data), sizeof(Student_data));
+    }
+
+    fin.close();
 }
 
 //Функция формирования ведомости по алфавиту для группы
@@ -304,8 +307,15 @@ void print_norm_sort(const std::string& und_data, const std::string& sort_und_da
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
 void create_stats(const std::string& stud_data, const std::string& new_bin_name /*= "stats_sort_lex.bin"*/,
                     size_t group_number){
+    file_exists(stud_data);
     std::ofstream fout(new_bin_name, std::ios::binary);
     std::ifstream fin(stud_data, std::ios::binary);
+    //Блок проверок
+    if (is_empty(stud_data)){
+        throw "Students book is empty";
+    }
+    check_stream(fin, stud_data);
+    check_stream(fout, new_bin_name);
 
     uint32_t size = 0;
     Student_data std_data;
@@ -318,23 +328,109 @@ void create_stats(const std::string& stud_data, const std::string& new_bin_name 
     }
     
     alphabet_sort(new_bin_name, size);
+    fout.close();
+    fin.close();
+}
+
+//Компаратор по среднему баллу
+int score_comp(const void* a, const void* b){
+    Student_data pa = *(const Student_data*)(a);
+    Student_data pb = *(const Student_data*)(b);
+    return true;
 }
 
 
-//Функция формирования ведомости по среднему баллу(возрастание)
+//Сортировка бинарника группы по убыванию среднего балла
+void med_score_sort(const std::string& filename, uint32_t size){
+    file_exists(filename);
+    std::ifstream fin(filename, std::ios::binary);
+    if (is_empty(filename)){
+        throw "Students book is empty";
+    }
+    check_stream(fin, filename);
+
+    Student_data* std_arr = new Student_data[size];
+    Student_data std_data;
+
+    uint32_t counter = 0;
+    
+    while (fin.read(reinterpret_cast<char*>(&std_data), sizeof(Student_data)) && counter < size){
+        std_arr[counter++] = std_data;
+    }
+
+    qsort(std_arr, size, sizeof(Student_data), score_comp);
+
+    std::ofstream fout(filename, std::ios::binary);
+    check_stream(fout, filename);
+    for (uint32_t i; i < size; ++i){
+        fout.write(reinterpret_cast<char*>(&std_data), sizeof(Student_data));
+    }
+    
+    fin.close();
+}
+
+//Функция формирования ведомости по среднему баллу(убывание) для заданной группы
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_sorted_stats(const std::string& stud_data, const std::string& new_bin_name /*= "stats_sort_score.bin"*/);
+void create_sorted_stats(const std::string& stud_data, const std::string& new_bin_name /*= "stats_sort_score.bin"*/,
+                        size_t group_number){
+    file_exists(stud_data);
 
+    std::ofstream fout(new_bin_name, std::ios::binary);
+    std::ifstream fin(stud_data, std::ios::binary);
 
-//Функция формирования ведомости по среднему баллу(убывание)
-//Формируется новый файл(пользователь сам выбирает название)  
-//Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_rev_sorted_stats(const std::string& stud_data, const std::string& new_bin_name /*= "stats_revsort_score.bin"*/);
+    if (is_empty(stud_data)){
+        throw "Students book is empty";
+    }
+    check_stream(fin, stud_data);
+    check_stream(fout, new_bin_name);
+
+    uint32_t size = 0;
+    Student_data std_data;
+
+    while (fin.read(reinterpret_cast<char*>(&std_data), sizeof(Student_data))){
+        if (std_data.group == group_number){
+            fout.write(reinterpret_cast<char*>(&std_data), sizeof(Student_data));
+            ++size;
+        }
+    }
+    
+    med_score_sort(new_bin_name, size);
+    fout.close();
+    fin.close();
+}
 
 
 //Функция формирования списка отличников
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_exlnts_list(const std::string& stud_data, const std::string& new_bin_name /*= "exelent_list.bin"*/);
+void create_exlnts_list(const std::string& stud_data, const std::string& new_bin_name /*= "exelent_list.bin"*/){
+    file_exists(stud_data);
+
+    std::ofstream fout(new_bin_name, std::ios::binary);
+    std::ifstream fin(stud_data, std::ios::binary);
+
+    if (is_empty(stud_data)){
+        throw "Students book is empty";
+    }
+    check_stream(fin, stud_data);
+    check_stream(fout, new_bin_name);
+
+    Student_data std_data;
+    Excelent exel;
+    bool is_exel = true;
+
+    while (fin.read(reinterpret_cast<char*>(&std_data), sizeof(Student_data))){
+        is_exel = true;
+        for (size_t i = 0; i < 3; ++i){
+            if (std_data.marks[i] < 8){
+                is_exel = false;
+            }
+        }
+        fout.write(reinterpret_cast<char*>(&exel), sizeof(Excelent));
+    }
+    
+    fout.close();
+    fin.close();
+}
 
