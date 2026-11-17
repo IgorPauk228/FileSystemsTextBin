@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <fstream>
 #include <string>
+#include <cctype>
 
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
@@ -37,6 +38,12 @@ struct Student_data
     char surname[20];
     char subj[3][20];
     size_t marks[3];
+};
+
+struct Excelent{
+    size_t group;
+    size_t number;
+    char surname[20];
 };
 
 
@@ -91,6 +98,12 @@ void sort_underscored(const std::string& und_data, const std::string& new_bin_na
 void print_norm_sort(const std::string& und_data, const std::string& sort_und_data);
 
 
+//Лексикографический компаратор
+int alphabet_comp(const void* a, const void* b);
+
+//Сортировка бинарника группы по алфавиту
+void alphabet_sort(const std::string& filename, uint32_t size);
+
 //Функция формирования ведомости по алфавиту
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
@@ -98,16 +111,13 @@ void create_stats(const std::string& stud_data, const std::string& new_bin_name 
                     uint32_t group_number);
 
 
-//Функция формирования ведомости по среднему баллу(возрастание)
-//Формируется новый файл(пользователь сам выбирает название)  
-//Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_sorted_stats(const std::string& stud_data, const std::string& new_bin_name = "stats_sort_score.bin");
-
-
 //Функция формирования ведомости по среднему баллу(убывание)
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_rev_sorted_stats(const std::string& stud_data, const std::string& new_bin_name = "stats_revsort_score.bin");
+void create_sorted_stats(const std::string& stud_data, const std::string& new_bin_name = "stats_sort_score.bin",
+                        size_t group_number);
+
+
 
 
 //Функция формирования списка отличников
