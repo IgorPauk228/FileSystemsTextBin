@@ -31,4 +31,6 @@ void check_stream(std::ifstream& fin, const std::string& filename);
 //Проверка потока(ofstream)
 void check_stream(std::ofstream& fin, const std::string& filename);
 
+//пороверка наличия расширения в имени файла
+void check_and_add_extension(std::string& filename);
 #endif

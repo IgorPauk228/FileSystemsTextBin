@@ -131,8 +131,7 @@ void add_avg_score(const std::string& stud_data, const std::string& new_bin_name
 //Функция формирования списка неуспевающих
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void list_of_undr_achv(const std::string& stud_data, const std::string& new_bin_name = "under_achievment_list.bin") {
-    try {
+void list_of_undr_achv(const std::string& stud_data, const std::string& new_bin_name /* = "under_achievment_list.bin" */) {
         //существует ли исходный файл
         file_exists(stud_data);
 
@@ -161,11 +160,6 @@ void list_of_undr_achv(const std::string& stud_data, const std::string& new_bin_
 
         fin.close();
         fout.close();
-
-    }
-    catch (const std::string& e) {
-        std::cerr << e;
-    }
 }
 
 //доп функция для проверки неуспеваемости, неудовлетворительными считаются <= 4
@@ -182,9 +176,8 @@ bool is_underachieving(const Student_book_marks& marks_data) {
 //Функция сортировки 
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника неуспевающих, название нового файла
-void sort_underscored(const std::string& und_data, const std::string& new_bin_name = "sorted_und_achieve.bin")
+void sort_underscored(const std::string& und_data, const std::string& new_bin_name /* = "sorted_und_achieve.bin" */)
 {
-    try {
         file_exists(und_data);
 
         // если файл пустой, то мы просто создаем пустой выходной файл и выходим
@@ -250,21 +243,17 @@ void sort_underscored(const std::string& und_data, const std::string& new_bin_na
         // Освобождаем память
         delete[] books;
         delete[] marks_arr;
-
-    }
-    catch (const std::string& e) {
-        std::cerr << e;
-    }
 }
 
 
 //Функция печати до сортировки и после
 //Аргументы функции - название бинарника неуспевающих и его отсортированной версии
 void print_norm_sort(const std::string& und_data, const std::string& sort_und_data) {
-    try {
         std::cout <<'\t' << " НЕОТСОРТИРОВАННЫЙ список неуспевающих " << '\t' << '\n';
 
-        if (file_exists(und_data), !is_empty(und_data)) 
+        file_exists(und_data);
+
+        if (!is_empty(und_data)) 
         { 
             // file_exists выбросит исключение, если файла нет
             std::ifstream fin1;
@@ -280,22 +269,24 @@ void print_norm_sort(const std::string& und_data, const std::string& sort_und_da
 
                 std::cout << num++ << ". " << book.surname << " " << book.name << " " << book.second_name
                     << " | Зач. книжка: " << book.number
-                    << " | Группа: " << marks.groop << std::endl;
+                    << " | Группа: " << marks.groop << '\n';
                 std::cout << "   Оценки: ";
                 for (size_t i = 0; i < 3; ++i) {
                     std::cout << marks.subj[i] << ": " << marks.marks[i] << "  ";
                 }
-                std::cout << std::endl;
+                std::cout << '\n';
             }
             fin1.close();
         }
         else {
-            std::cout << "Файл пуст или не найден." << std::endl;
+            std::cout << "Файл пуст или не найден." << '\n';
         }
 
         std::cout << '\n' << '\t' << "ОТСОРТИРОВАННЫЙ список по неуспеваемости" << '\t' << '\n';
 
-        if (file_exists(sort_und_data), !is_empty(sort_und_data)) {
+        file_exists(sort_und_data);
+
+        if (!is_empty(sort_und_data)) {
             std::ifstream fin2;
             fin2.open(sort_und_data, std::ios::binary);
             check_stream(fin2, sort_und_data);
@@ -309,23 +300,18 @@ void print_norm_sort(const std::string& und_data, const std::string& sort_und_da
 
                 std::cout << num++ << ". " << book.surname << " " << book.name << " " << book.second_name
                     << " | Зач. книжка: " << book.number
-                    << " | Группа: " << marks.groop << std::endl;
+                    << " | Группа: " << marks.groop << '\n';
                 std::cout << "   Оценки: ";
                 for (size_t i = 0; i < 3; ++i) {
                     std::cout << marks.subj[i] << ": " << marks.marks[i] << "  ";
                 }
-                std::cout << std::endl;
+                std::cout << '\n';
             }
             fin2.close();
         }
         else {
-            std::cout << "Файл пуст или не найден." << std::endl;
+            std::cout << "Файл пуст или не найден." << '\n';
         }
-
-    }
-    catch (const std::string& msg) {
-        std::cerr << msg;
-    }
 }
 
 //Функция формирования ведомости по алфавиту
