@@ -86,6 +86,8 @@ void add_avg_score(const std::string& stud_data, const std::string& new_bin_name
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
 void list_of_undr_achv(const std::string& stud_data, const std::string& new_bin_name = "under_achievment_list.bin");
 
+//доп функция для проверки неуспеваемости, неудовлетворительными считаются <= 4
+bool is_underachieving(const Student_book_marks& marks_data);
 
 //Функция сортировки 
 //Формируется новый файл(пользователь сам выбирает название)  

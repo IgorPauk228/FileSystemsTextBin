@@ -116,7 +116,52 @@ void add_avg_score(const std::string& stud_data, const std::string& new_bin_name
 //Функция формирования списка неуспевающих
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void list_of_undr_achv(const std::string& stud_data, const std::string& new_bin_name /*= "under_achievment_list.bin"*/);
+void list_of_undr_achv(const std::string& stud_data, const std::string& new_bin_name = "under_achievment_list.bin") {
+    try {
+        //существует ли исходный файл
+        file_exists(stud_data);
+
+        //открываем входной файл в бинарном режиме
+        std::ifstream fin;
+        fin.open(stud_data, std::ios::binary);
+        check_stream(fin, stud_data); 
+
+        //открываем выходной файл в бинарном режиме
+        std::ofstream fout;
+        fout.open(new_bin_name, std::ios::binary);
+        check_stream(fout, new_bin_name);
+
+        Student_book book;
+        Student_book_marks marks;
+
+        //читаем и записываем наши замечательные структуры
+        while (fin.read(reinterpret_cast<char*>(&book), sizeof(Student_book)) &&
+            fin.read(reinterpret_cast<char*>(&marks), sizeof(Student_book_marks))) {
+
+            if (is_underachieving(marks)) {
+                fout.write(reinterpret_cast<const char*>(&book), sizeof(Student_book));
+                fout.write(reinterpret_cast<const char*>(&marks), sizeof(Student_book_marks));
+            }
+        }
+
+        fin.close();
+        fout.close();
+
+    }
+    catch (const std::string& e) {
+        std::cerr << e;
+    }
+}
+
+//доп функция для проверки неуспеваемости, неудовлетворительными считаются <= 4
+bool is_underachieving(const Student_book_marks& marks_data) {
+    for (size_t i = 0; i < 3; ++i) {
+        if (marks_data.marks[i] <= 4) { // есть ли неудовлетворительные отметки
+            return true;
+        }
+    }
+    return false;
+}
 
 
 //Функция сортировки 
