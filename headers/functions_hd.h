@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <fstream>
 #include <string>
+#include <cctype>
 
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
@@ -10,6 +11,41 @@
 //1)Если файл уже существует, то он перезаписывается с нуля
 //2)Названия новых файлов задаются как параметры по умолчанию
 //3)Программа, если пользователь не указал формат, сама его дописывает по контексту
+
+//структурка для зачетки
+struct Student_book
+{
+    size_t number;
+    char surname[20];
+    char name[20];
+    char second_name[20];
+};
+
+//структурка для оценок
+struct Student_book_marks
+{
+    size_t group;
+    size_t number;
+    char subj[3][20];
+    size_t marks[3];
+};
+
+//
+struct Student_data
+{
+    size_t group;
+    size_t number;
+    char surname[20];
+    char subj[3][20];
+    size_t marks[3];
+};
+
+struct Excelent{
+    size_t group;
+    size_t number;
+    char surname[20];
+};
+
 
 //заполняет числовые поля структур Student_book/Student_book_marks 
 void fill_sb(size_t& info,std::string& temp,char delim,size_t& beg);
@@ -64,22 +100,26 @@ void sort_underscored(const std::string& und_data, const std::string& new_bin_na
 void print_norm_sort(const std::string& und_data, const std::string& sort_und_data);
 
 
+//Лексикографический компаратор
+int alphabet_comp(const void* a, const void* b);
+
+//Сортировка бинарника группы по алфавиту
+void alphabet_sort(const std::string& filename, uint32_t size);
+
 //Функция формирования ведомости по алфавиту
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_stats(const std::string& stud_data, const std::string& new_bin_name = "stats_sort_lex.bin");
-
-
-//Функция формирования ведомости по среднему баллу(возрастание)
-//Формируется новый файл(пользователь сам выбирает название)  
-//Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_sorted_stats(const std::string& stud_data, const std::string& new_bin_name = "stats_sort_score.bin");
+void create_stats(const std::string& stud_data, const std::string& new_bin_name = "stats_sort_lex.bin",
+                    uint32_t group_number);
 
 
 //Функция формирования ведомости по среднему баллу(убывание)
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_rev_sorted_stats(const std::string& stud_data, const std::string& new_bin_name = "stats_revsort_score.bin");
+void create_sorted_stats(const std::string& stud_data, const std::string& new_bin_name = "stats_sort_score.bin",
+                        size_t group_number);
+
+
 
 
 //Функция формирования списка отличников
