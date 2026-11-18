@@ -120,6 +120,7 @@ void add_surnames(const std::string& stud_books, const std::string& stud_marks,
     file_exists(stud_books);
     if(is_empty(stud_books))
     {
+        
         throw "File is empty";
     }
     check_stream(fin1,stud_books);
