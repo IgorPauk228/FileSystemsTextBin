@@ -48,8 +48,11 @@ void create_bin_books(const std::string& stud_books, const std::string& bin_name
     std::ifstream fin(stud_books);
     char delim = ';';
     file_exists(stud_books);
-    is_empty(stud_books);
-    open_input_file(fin,stud_books);
+    if(is_empty(stud_books))
+    {
+        throw "File is empty";
+    }
+    check_stream(fin,stud_books);
     std::string temp{};
     std::ofstream bin_out(bin_name,std::ios::binary);
     while(std::getline(fin,temp))
@@ -72,8 +75,11 @@ void create_bin_marks(const std::string& stud_marks, const std::string& bin_name
     std::ifstream fin(stud_marks);
     char delim = ';';
     file_exists(stud_marks);
-    is_empty(stud_marks);
-    open_input_file(fin,stud_marks);
+    if(is_empty(stud_marks))
+    {
+        throw "File is empty";
+    }
+    check_stream(fin,stud_marks);
     std::string temp{};
     std::ofstream bin_out(bin_name,std::ios::binary);
     while(std::getline(fin,temp))
@@ -104,9 +110,90 @@ void create_bin(const std::string& stud_books, const std::string& stud_marks,
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарников с зачетками и оценками, название нового файла           
 void add_surnames(const std::string& stud_books, const std::string& stud_marks, 
-                const std::string& new_bin_name /*= "students_data.bin"*/);
+                const std::string& new_bin_name /*= "students_data.bin"*/)
+{
+    char delim = ';';
+    std::ofstream bin_out(new_bin_name,std::ios::binary);
+    //открываем и проверяем файл stud_books
+    std::ifstream fin1(stud_books);
+    file_exists(stud_books);
+    if(is_empty(stud_books))
+    {
+        throw "File is empty";
+    }
+    check_stream(fin1,stud_books);
+    //открываем и проверяем файл stud_marks
+    std::ifstream fin2(stud_marks);
+    file_exists(stud_marks);
+    if(is_empty(stud_marks))
+    {
+        throw "File is empty";
+    }
+    check_stream(fin2,stud_marks);
 
+    std::string temp_books = "";
+    while(std::getline(fin1,temp_books))
+    {
+        Student_data data;
+        if(temp_books == ""){continue;}
+        size_t beg = temp_books.find_first_of(delim);
+        size_t books_number = stoi(temp_books.substr(0,beg));
+        fill_sb(data.surname,temp_books,delim,++beg);
+        std::string temp_marks = "";
+        if(!std::getline(fin2,temp_marks))
+        {
+            return;
+        }
+        while(temp_marks.empty())
+        {
+            if(!std::getline(fin2,temp_marks))
+        {
+            return;
+        }
+        }
+        size_t marks_number = stoi(number_marks(temp_marks));
+        bool flag = true;
+        while(books_number != marks_number)
+        {
+            if(fin2.eof())
+            {
+                fin2.clear();
+                fin2.seekg(0,std::ios::beg);
+                flag = false;
+                beg = 0;
+                break;
+            }
+            std::getline(fin2,temp_marks);
+            if(temp_marks.empty()){continue;}
+            marks_number = stoi(number_marks(temp_marks));
+        }
+        if(flag)
+        {
+            beg = 0;
+            fill_sb(data.group,temp_marks,delim,beg);
+            fill_sb(data.number,temp_marks,delim,beg);
+            for(size_t i = 0;i < 3;++i)
+            {
+                fill_sb(data.subj[i],temp_marks,delim,beg);
+                fill_sb(data.marks[i],temp_marks,delim,beg);
+            }
+            bin_out.write((char*)&data,sizeof(data));
+            fin2.seekg(0,std::ios::beg);
+        }
+    }
+    bin_out.close();
+    fin1.close();
+    fin2.close();
+}
 
+//выделяет номер зачетки в строках файла stud_marks.txt
+std::string number_marks(const std::string& stud_marks)
+{
+    size_t beg = stud_marks.find_first_of(';');
+    size_t end = stud_marks.find_first_of(';',++beg);
+    std::string number = stud_marks.substr(beg,end-beg);
+    return number;
+}
 //Функция вычисления среднего балла студента
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
