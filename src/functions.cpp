@@ -48,8 +48,11 @@ void create_bin_books(const std::string& stud_books, const std::string& bin_name
     std::ifstream fin(stud_books);
     char delim = ';';
     file_exists(stud_books);
-    is_empty(stud_books);
-    open_input_file(fin,stud_books);
+    if(is_empty(stud_books))
+    {
+        throw "File is empty";
+    }
+    check_stream(fin,stud_books);
     std::string temp{};
     std::ofstream bin_out(bin_name,std::ios::binary);
     while(std::getline(fin,temp))
@@ -72,8 +75,11 @@ void create_bin_marks(const std::string& stud_marks, const std::string& bin_name
     std::ifstream fin(stud_marks);
     char delim = ';';
     file_exists(stud_marks);
-    is_empty(stud_marks);
-    open_input_file(fin,stud_marks);
+    if(is_empty(stud_marks))
+    {
+        throw "File is empty";
+    }
+    check_stream(fin,stud_marks);
     std::string temp{};
     std::ofstream bin_out(bin_name,std::ios::binary);
     while(std::getline(fin,temp))
@@ -104,9 +110,90 @@ void create_bin(const std::string& stud_books, const std::string& stud_marks,
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарников с зачетками и оценками, название нового файла           
 void add_surnames(const std::string& stud_books, const std::string& stud_marks, 
-                const std::string& new_bin_name /*= "students_data.bin"*/);
+                const std::string& new_bin_name /*= "students_data.bin"*/)
+{
+    char delim = ';';
+    std::ofstream bin_out(new_bin_name,std::ios::binary);
+    //открываем и проверяем файл stud_books
+    std::ifstream fin1(stud_books);
+    file_exists(stud_books);
+    if(is_empty(stud_books))
+    {
+        throw "File is empty";
+    }
+    check_stream(fin1,stud_books);
+    //открываем и проверяем файл stud_marks
+    std::ifstream fin2(stud_marks);
+    file_exists(stud_marks);
+    if(is_empty(stud_marks))
+    {
+        throw "File is empty";
+    }
+    check_stream(fin2,stud_marks);
 
+    std::string temp_books = "";
+    while(std::getline(fin1,temp_books))
+    {
+        Student_data data;
+        if(temp_books == ""){continue;}
+        size_t beg = temp_books.find_first_of(delim);
+        size_t books_number = stoi(temp_books.substr(0,beg));
+        fill_sb(data.surname,temp_books,delim,++beg);
+        std::string temp_marks = "";
+        if(!std::getline(fin2,temp_marks))
+        {
+            return;
+        }
+        while(temp_marks.empty())
+        {
+            if(!std::getline(fin2,temp_marks))
+        {
+            return;
+        }
+        }
+        size_t marks_number = stoi(number_marks(temp_marks));
+        bool flag = true;
+        while(books_number != marks_number)
+        {
+            if(fin2.eof())
+            {
+                fin2.clear();
+                fin2.seekg(0,std::ios::beg);
+                flag = false;
+                beg = 0;
+                break;
+            }
+            std::getline(fin2,temp_marks);
+            if(temp_marks.empty()){continue;}
+            marks_number = stoi(number_marks(temp_marks));
+        }
+        if(flag)
+        {
+            beg = 0;
+            fill_sb(data.group,temp_marks,delim,beg);
+            fill_sb(data.number,temp_marks,delim,beg);
+            for(size_t i = 0;i < 3;++i)
+            {
+                fill_sb(data.subj[i],temp_marks,delim,beg);
+                fill_sb(data.marks[i],temp_marks,delim,beg);
+            }
+            bin_out.write((char*)&data,sizeof(data));
+            fin2.seekg(0,std::ios::beg);
+        }
+    }
+    bin_out.close();
+    fin1.close();
+    fin2.close();
+}
 
+//выделяет номер зачетки в строках файла stud_marks.txt
+std::string number_marks(const std::string& stud_marks)
+{
+    size_t beg = stud_marks.find_first_of(';');
+    size_t end = stud_marks.find_first_of(';',++beg);
+    std::string number = stud_marks.substr(beg,end-beg);
+    return number;
+}
 //Функция вычисления среднего балла студента
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
@@ -116,8 +203,7 @@ void add_avg_score(const std::string& stud_data, const std::string& new_bin_name
 //Функция формирования списка неуспевающих
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void list_of_undr_achv(const std::string& stud_data, const std::string& new_bin_name = "under_achievment_list.bin") {
-    try {
+void list_of_undr_achv(const std::string& stud_data, const std::string& new_bin_name /* = "under_achievment_list.bin" */) {
         //существует ли исходный файл
         file_exists(stud_data);
 
@@ -146,11 +232,6 @@ void list_of_undr_achv(const std::string& stud_data, const std::string& new_bin_
 
         fin.close();
         fout.close();
-
-    }
-    catch (const std::string& e) {
-        std::cerr << e;
-    }
 }
 
 //доп функция для проверки неуспеваемости, неудовлетворительными считаются <= 4
@@ -167,20 +248,114 @@ bool is_underachieving(const Student_book_marks& marks_data) {
 //Функция сортировки 
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника неуспевающих, название нового файла
-void sort_underscored(const std::string& und_data, const std::string& new_bin_name = "sorted_und_achieve.bin");
+void sort_underscored(const std::string& und_data, const std::string& new_bin_name /* = "sorted_und_achieve.bin" */)
+{
+        file_exists(und_data);
+
+        // если файл пустой, то мы просто создаем пустой выходной файл и выходим
+        if (is_empty(und_data)) {
+            std::ofstream fout;
+            fout.open(new_bin_name, std::ios::binary);
+            check_stream(fout, new_bin_name);
+            fout.close();
+            return;
+        }
+
+        std::ifstream fin;
+        fin.open(und_data, std::ios::binary);
+        check_stream(fin, und_data);
+
+        // Определяем размер файлика
+        fin.seekg(0, std::ios::end);
+        std::streamsize file_size = fin.tellg();
+        fin.seekg(0, std::ios::beg);
+
+        const size_t pair_size = sizeof(Student_book) + sizeof(Student_book_marks);
+        size_t count = static_cast<size_t>(file_size) / pair_size;
+
+        // Выделяем два динамических массива
+        Student_book* books = new Student_book[count];
+        Student_book_marks* marks_arr = new Student_book_marks[count];
+
+        // Читаем данные
+        for (size_t i = 0; i < count; ++i) {
+            fin.read(reinterpret_cast<char*>(&books[i]), sizeof(Student_book));
+            fin.read(reinterpret_cast<char*>(&marks_arr[i]), sizeof(Student_book_marks));
+        }
+        fin.close();
+
+        // Сортировка пузырьком по фамилии (одновременно переставляем в обоих массивах)
+        for (size_t i = 0; i < count - 1; ++i) {
+            for (size_t j = 0; j < count - i - 1; ++j) {
+                if (std::strcmp(books[j].surname, books[j + 1].surname) > 0) {
+                    // Меняем местами данные зачетки
+                    Student_book temp_book = books[j];
+                    books[j] = books[j + 1];
+                    books[j + 1] = temp_book;
+
+                    // Синхронно меняем местами данные об оценках
+                    Student_book_marks temp_marks = marks_arr[j];
+                    marks_arr[j] = marks_arr[j + 1];
+                    marks_arr[j + 1] = temp_marks;
+                }
+            }
+        }
+
+        // Записываем отсортированные данные
+        std::ofstream fout;
+        fout.open(new_bin_name, std::ios::binary);
+        check_stream(fout, new_bin_name);
+
+        for (size_t i = 0; i < count; ++i) {
+            fout.write(reinterpret_cast<const char*>(&books[i]), sizeof(Student_book));
+            fout.write(reinterpret_cast<const char*>(&marks_arr[i]), sizeof(Student_book_marks));
+        }
+        fout.close();
+
+        // Освобождаем память
+        delete[] books;
+        delete[] marks_arr;
+}
 
 
 //Функция печати до сортировки и после
 //Аргументы функции - название бинарника неуспевающих и его отсортированной версии
-void print_norm_sort(const std::string& und_data, const std::string& sort_und_data);
+void print_norm_sort(const std::string& und_data, const std::string& sort_und_data) {
+        std::cout <<'\t' << " НЕОТСОРТИРОВАННЫЙ список неуспевающих " << '\t' << '\n';
 
-//Лексикографический компаратор
-int alphabet_comp(const void* a, const void* b){
-    Student_data pa = *(const Student_data*)(a);
-    Student_data pb = *(const Student_data*)(b);
-    return std::strcmp(pa.surname, pb.surname);
+        file_exists(und_data);
+
+        if (!is_empty(und_data)) 
+        { 
+            // file_exists выбросит исключение, если файла нет
+            std::ifstream fin1;
+            fin1.open(und_data, std::ios::binary);
+            check_stream(fin1, und_data);
+
+            Student_book book;
+            Student_book_marks marks;
+            int num = 1;
+
+            while (fin1.read(reinterpret_cast<char*>(&book), sizeof(Student_book)) &&
+                fin1.read(reinterpret_cast<char*>(&marks), sizeof(Student_book_marks))) {
+
+                std::cout << num++ << ". " << book.surname << " " << book.name << " " << book.second_name
+                    << " | Зач. книжка: " << book.number
+                    << " | Группа: " << marks.groop << '\n';
+                std::cout << "   Оценки: ";
+                for (size_t i = 0; i < 3; ++i) {
+                    std::cout << marks.subj[i] << ": " << marks.marks[i] << "  ";
+                }
+                std::cout << '\n';
+            }
+            fin1.close();
+        }
+        else {
+            std::cout << "Файл пуст или не найден." << '\n';
+        }
+
+        std::cout << '\n' << '\t' << "ОТСОРТИРОВАННЫЙ список по неуспеваемости" << '\t' << '\n';
 }
-
 
 //Сортировка бинарника группы по алфавиту
 void alphabet_sort(const std::string& filename, uint32_t size){
@@ -194,11 +369,14 @@ void alphabet_sort(const std::string& filename, uint32_t size){
     Student_data* std_arr = new Student_data[size];
     Student_data std_data;
 
-    uint32_t counter = 0;
-    
-    while (fin.read(reinterpret_cast<char*>(&std_data), sizeof(Student_data)) && counter < size){
-        std_arr[counter++] = std_data;
-    }
+        if (!is_empty(sort_und_data)) {
+            std::ifstream fin2;
+            fin2.open(sort_und_data, std::ios::binary);
+            check_stream(fin2, sort_und_data);
+
+            Student_book book;
+            Student_book_marks marks;
+            int num = 1;
 
     qsort(std_arr, size, sizeof(Student_data), alphabet_comp);
 

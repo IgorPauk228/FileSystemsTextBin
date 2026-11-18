@@ -74,6 +74,8 @@ void create_bin(const std::string& stud_books, const std::string& stud_marks,
 void add_surnames(const std::string& stud_books, const std::string& stud_marks, 
                 const std::string& new_bin_name = "students_data.bin");
 
+//Функция выделяет номер зачетки файла stud_marks.txt
+std::string number_marks(const std::string&);
 
 //Функция вычисления среднего балла студента
 //Формируется новый файл(пользователь сам выбирает название)  
