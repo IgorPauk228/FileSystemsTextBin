@@ -113,18 +113,16 @@ void add_surnames(const std::string& stud_books, const std::string& stud_marks,
                 const std::string& new_bin_name /*= "students_data.bin"*/)
 {
     char delim = ';';
-    Student_data data;
     std::ofstream bin_out(new_bin_name,std::ios::binary);
-//открываем и проверяем файл stud_books
+    //открываем и проверяем файл stud_books
     std::ifstream fin1(stud_books);
     file_exists(stud_books);
     if(is_empty(stud_books))
     {
-        
         throw "File is empty";
     }
     check_stream(fin1,stud_books);
-//открываем и проверяем файл stud_marks
+    //открываем и проверяем файл stud_marks
     std::ifstream fin2(stud_marks);
     file_exists(stud_marks);
     if(is_empty(stud_marks))
@@ -136,24 +134,37 @@ void add_surnames(const std::string& stud_books, const std::string& stud_marks,
     std::string temp_books = "";
     while(std::getline(fin1,temp_books))
     {
+        Student_data data;
         if(temp_books == ""){continue;}
         size_t beg = temp_books.find_first_of(delim);
         size_t books_number = stoi(temp_books.substr(0,beg));
         fill_sb(data.surname,temp_books,delim,++beg);
         std::string temp_marks = "";
-        std::getline(fin2,temp_marks);
+        if(!std::getline(fin2,temp_marks))
+        {
+            return;
+        }
+        while(temp_marks.empty())
+        {
+            if(!std::getline(fin2,temp_marks))
+        {
+            return;
+        }
+        }
         size_t marks_number = stoi(number_marks(temp_marks));
         bool flag = true;
         while(books_number != marks_number)
         {
             if(fin2.eof())
             {
+                fin2.clear();
                 fin2.seekg(0,std::ios::beg);
                 flag = false;
+                beg = 0;
                 break;
             }
             std::getline(fin2,temp_marks);
-            if(temp_marks == ""){continue;}
+            if(temp_marks.empty()){continue;}
             marks_number = stoi(number_marks(temp_marks));
         }
         if(flag)
@@ -174,6 +185,7 @@ void add_surnames(const std::string& stud_books, const std::string& stud_marks,
     fin1.close();
     fin2.close();
 }
+
 //выделяет номер зачетки в строках файла stud_marks.txt
 std::string number_marks(const std::string& stud_marks)
 {
