@@ -336,7 +336,7 @@ void create_exlnts_list(const std::string& stud_data, const std::string& new_bin
                 is_exel = false;
             }
         }
-        fout.write(reinterpret_cast<char*>(&exel), sizeof(Excelent));
+        if (is_exel) fout.write(reinterpret_cast<char*>(&exel), sizeof(Excelent));
     }
     
     fout.close();
