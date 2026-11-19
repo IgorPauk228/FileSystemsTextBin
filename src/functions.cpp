@@ -472,9 +472,9 @@ void create_stats(const std::string& stud_data, const std::string& new_bin_name 
 
 //Компаратор по среднему баллу
 int score_comp(const void* a, const void* b){
-    Student_data pa = *(const Student_data*)(a);
-    Student_data pb = *(const Student_data*)(b);
-    return true;
+    Student_avg pa = *(const Student_avg*)(a);
+    Student_avg pb = *(const Student_avg*)(b);
+    return pa.avg < pb.avg;
 }
 
 
@@ -487,21 +487,21 @@ void med_score_sort(const std::string& filename, uint32_t size){
     }
     check_stream(fin, filename);
 
-    Student_data* std_arr = new Student_data[size];
-    Student_data std_data;
+    Student_avg* std_arr = new Student_avg[size];
+    Student_avg std_avg;
 
     uint32_t counter = 0;
     
-    while (fin.read(reinterpret_cast<char*>(&std_data), sizeof(Student_data)) && counter < size){
-        std_arr[counter++] = std_data;
+    while (fin.read(reinterpret_cast<char*>(&std_avg), sizeof(Student_avg)) && counter < size){
+        std_arr[counter++] = std_avg;
     }
 
-    qsort(std_arr, size, sizeof(Student_data), score_comp);
+    qsort(std_arr, size, sizeof(Student_avg), score_comp);
 
     std::ofstream fout(filename, std::ios::binary);
     check_stream(fout, filename);
     for (uint32_t i; i < size; ++i){
-        fout.write(reinterpret_cast<char*>(&std_data), sizeof(Student_data));
+        fout.write(reinterpret_cast<char*>(&std_avg), sizeof(Student_avg));
     }
     
     fin.close();
@@ -510,25 +510,25 @@ void med_score_sort(const std::string& filename, uint32_t size){
 //Функция формирования ведомости по среднему баллу(убывание) для заданной группы
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_sorted_stats(const std::string& stud_data, const std::string& new_bin_name /*= "stats_sort_score.bin"*/,
+void create_sorted_stats(const std::string& stud_avg, const std::string& new_bin_name /*= "stats_sort_score.bin"*/,
                         size_t group_number){
-    file_exists(stud_data);
+    file_exists(stud_avg);
 
     std::ofstream fout(new_bin_name, std::ios::binary);
-    std::ifstream fin(stud_data, std::ios::binary);
+    std::ifstream fin(stud_avg, std::ios::binary);
 
-    if (is_empty(stud_data)){
+    if (is_empty(stud_avg)){
         throw "Students book is empty";
     }
-    check_stream(fin, stud_data);
+    check_stream(fin, stud_avg);
     check_stream(fout, new_bin_name);
 
     uint32_t size = 0;
-    Student_data std_data;
+    Student_data std_avg;
 
-    while (fin.read(reinterpret_cast<char*>(&std_data), sizeof(Student_data))){
-        if (std_data.group == group_number){
-            fout.write(reinterpret_cast<char*>(&std_data), sizeof(Student_data));
+    while (fin.read(reinterpret_cast<char*>(&std_avg), sizeof(Student_avg))){
+        if (std_avg.group == group_number){
+            fout.write(reinterpret_cast<char*>(&std_avg), sizeof(Student_avg));
             ++size;
         }
     }
