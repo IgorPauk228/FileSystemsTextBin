@@ -34,10 +34,10 @@ void genere_stdnts_list(const std::string* surnames, const std::string& filename
 
 //Генерация файла с оценками на основе предыдущего
 //Принимает имена 2-х файлов - созданного с именами и номерами, и создаваемого
-void genere_marks(const std::string& books_file = "student_book.txt", const std::string& marks_file = "student_marks.txt");
+void genere_marks(const std::string& books_file = "student_book.txt", const std::string& marks_file = "student_mark.txt");
 
 //Функция для генерации 2-х файлов
 void genere_all_data(uint32_t size, const std::string& books_file = "student_book.txt", 
-                    const std::string& marks_file = "student_marks.txt");
+                    const std::string& marks_file = "student_mark.txt");
 
 #endif

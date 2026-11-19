@@ -69,13 +69,13 @@ void create_bin_books(const std::string& stud_books = "student_book.txt",
 
 //Формирование бинарника с оценками
 //Пользователь передает имя файла с оценками и имя для нового файла
-void create_bin_marks(const std::string& stud_marks = "student_marks.txt", 
+void create_bin_marks(const std::string& stud_marks = "student_mark.txt", 
                     const std::string& bin_name = "student_mark.bin");
 
 //Функция формирования 2-х бинарников
 //Пользователь передает имя файлов с зачетками и оценками и имена 2-х новых файлов
 void create_bin(const std::string& stud_books = "student_book.txt", 
-                const std::string& stud_marks = "student_marks.txt", 
+                const std::string& stud_marks = "student_mark.txt", 
                 const std::string& bin_name_book = "student_book.bin", 
                 const std::string& bin_name_mark = "student_mark.bin");
 
@@ -106,7 +106,7 @@ void list_of_undr_achv(const std::string& stud_data = "students_data.bin",
                     const std::string& new_bin_name = "under_achievment_list.bin");
 
 //доп функция для проверки неуспеваемости, неудовлетворительными считаются <= 4
-bool is_underachieving(const Student_book_marks& marks_data);
+bool is_underachieving(const Student_data& marks_data);
 
 //Функция сортировки 
 //Формируется новый файл(пользователь сам выбирает название)  
