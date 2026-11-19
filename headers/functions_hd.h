@@ -133,6 +133,11 @@ void create_stats(const std::string& stud_data  = "students_data.bin",
                 const std::string& new_bin_name = "stats_sort_lex.bin",
                 size_t group_number);
 
+//Компаратор по среднему баллу
+int score_comp(const void* a, const void* b);
+
+//Сортировка бинарника группы по убыванию среднего балла
+void med_score_sort(const std::string& filename, uint32_t size);
 
 //Функция формирования ведомости по среднему баллу(убывание)
 //Формируется новый файл(пользователь сам выбирает название)  
