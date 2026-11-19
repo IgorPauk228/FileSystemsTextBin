@@ -40,6 +40,14 @@ struct Student_data
     size_t marks[3];
 };
 
+struct Student_avg
+{
+    size_t group;
+    size_t number;
+    char surname[20];
+    double avg;
+};
+
 struct Excelent{
     size_t group;
     size_t number;
@@ -80,7 +88,7 @@ std::string number_marks(const std::string&);
 //Функция вычисления среднего балла студента
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void add_avg_score(const std::string& stud_data, const std::string& new_bin_name = "average_score.bin");
+void add_avg_score(const std::string& stud_books, const std::string& stud_marks, const std::string& new_bin_name = "students_data.bin",const std::string& avg_bin = "average_score.bin");
 
 
 //Функция формирования списка неуспевающих

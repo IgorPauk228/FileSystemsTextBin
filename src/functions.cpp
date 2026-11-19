@@ -197,8 +197,30 @@ std::string number_marks(const std::string& stud_marks)
 //Функция вычисления среднего балла студента
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void add_avg_score(const std::string& stud_data, const std::string& new_bin_name /*= "average_score.bin*/);
-
+void add_avg_score(const std::string& stud_books, const std::string& stud_marks, const std::string& new_bin_name /*=students_data.bin"*/,const std::string& avg_bin /*= "average_score.bin"*/)
+{
+    add_surnames(stud_books,stud_marks);  // создаем бинарник для считывания балла
+    std::ofstream fout(avg_bin,std::ios::binary);
+    std::ifstream fin(new_bin_name,std::ios::binary); //открываем и проверяем созданный бинарник
+    file_exists(new_bin_name);
+    if(is_empty(new_bin_name))
+    {
+        throw "File is empty";
+    }
+    check_stream(fin,new_bin_name);
+    Student_data data;
+    Student_avg student_avg;
+    while(fin.read((char*)&data, sizeof(Student_data)))
+    {
+        student_avg.group = data.group;
+        student_avg.number = data.number;
+        strcpy(student_avg.surname,data.surname);
+        student_avg.avg = static_cast<double>(data.marks[0] + data.marks[1] + data.marks[2])/3.0;
+        fout.write((char*)&student_avg,sizeof(Student_avg));
+    }
+    fin.close();
+    fout.close();
+}
 
 //Функция формирования списка неуспевающих
 //Формируется новый файл(пользователь сам выбирает название)  
