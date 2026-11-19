@@ -321,40 +321,65 @@ void sort_underscored(const std::string& und_data, const std::string& new_bin_na
 //Функция печати до сортировки и после
 //Аргументы функции - название бинарника неуспевающих и его отсортированной версии
 void print_norm_sort(const std::string& und_data, const std::string& sort_und_data) {
-        std::cout <<'\t' << " НЕОТСОРТИРОВАННЫЙ список неуспевающих " << '\t' << '\n';
+    std::cout <<'\t' << " НЕОТСОРТИРОВАННЫЙ список неуспевающих " << '\t' << '\n';
 
-        file_exists(und_data);
+    if (file_exists(und_data), !is_empty(und_data)) 
+    { 
+        // file_exists выбросит исключение, если файла нет
+        std::ifstream fin1;
+        fin1.open(und_data, std::ios::binary);
+        check_stream(fin1, und_data);
 
-        if (!is_empty(und_data)) 
-        { 
-            // file_exists выбросит исключение, если файла нет
-            std::ifstream fin1;
-            fin1.open(und_data, std::ios::binary);
-            check_stream(fin1, und_data);
+        Student_book book;
+        Student_book_marks marks;
+        int num = 1;
 
-            Student_book book;
-            Student_book_marks marks;
-            int num = 1;
+        while (fin1.read(reinterpret_cast<char*>(&book), sizeof(Student_book)) &&
+            fin1.read(reinterpret_cast<char*>(&marks), sizeof(Student_book_marks))) {
 
-            while (fin1.read(reinterpret_cast<char*>(&book), sizeof(Student_book)) &&
-                fin1.read(reinterpret_cast<char*>(&marks), sizeof(Student_book_marks))) {
-
-                std::cout << num++ << ". " << book.surname << " " << book.name << " " << book.second_name
-                    << " | Зач. книжка: " << book.number
-                    << " | Группа: " << marks.group << '\n';
-                std::cout << "   Оценки: ";
-                for (size_t i = 0; i < 3; ++i) {
-                    std::cout << marks.subj[i] << ": " << marks.marks[i] << "  ";
-                }
-                std::cout << '\n';
+            std::cout << num++ << ". " << book.surname << " " << book.name << " " << book.second_name
+                << " | Зач. книжка: " << book.number
+                << " | Группа: " << marks.group << std::endl;
+            std::cout << "   Оценки: ";
+            for (size_t i = 0; i < 3; ++i) {
+                std::cout << marks.subj[i] << ": " << marks.marks[i] << "  ";
             }
-            fin1.close();
+            std::cout << std::endl;
         }
-        else {
-            std::cout << "Файл пуст или не найден." << '\n';
-        }
+        fin1.close();
+    }
+    else {
+        std::cout << "Файл пуст или не найден." << std::endl;
+    }
 
-        std::cout << '\n' << '\t' << "ОТСОРТИРОВАННЫЙ список по неуспеваемости" << '\t' << '\n';
+    std::cout << '\n' << '\t' << "ОТСОРТИРОВАННЫЙ список по неуспеваемости" << '\t' << '\n';
+
+    if (file_exists(sort_und_data), !is_empty(sort_und_data)) {
+        std::ifstream fin2;
+        fin2.open(sort_und_data, std::ios::binary);
+        check_stream(fin2, sort_und_data);
+
+        Student_book book;
+        Student_book_marks marks;
+        int num = 1;
+
+        while (fin2.read(reinterpret_cast<char*>(&book), sizeof(Student_book)) &&
+            fin2.read(reinterpret_cast<char*>(&marks), sizeof(Student_book_marks))) {
+
+            std::cout << num++ << ". " << book.surname << " " << book.name << " " << book.second_name
+                << " | Зач. книжка: " << book.number
+                << " | Группа: " << marks.group << std::endl;
+            std::cout << "   Оценки: ";
+            for (size_t i = 0; i < 3; ++i) {
+                std::cout << marks.subj[i] << ": " << marks.marks[i] << "  ";
+            }
+            std::cout << std::endl;
+        }
+        fin2.close();
+    }
+    else {
+        std::cout << "Файл пуст или не найден." << std::endl;
+    }
 }
 
 //Лексикографический компаратор
