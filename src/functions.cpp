@@ -3,7 +3,8 @@
 #include <fstream>
 #include <string>
 #include <cstring>
-#include <check_hd.h>
+
+#include "generate.cpp"
 #include <cctype>
 #include "../headers/functions_hd.h"
 //Сами функции
@@ -58,6 +59,9 @@ void create_bin_books(const std::string& stud_books /*= "student_book.txt"*/,
     std::ofstream bin_out(bin_name,std::ios::binary);
     while(std::getline(fin,temp))
     {
+        if (temp.empty()){
+            continue;
+        }
         size_t beg = 0;
         fill_sb(student_book.number,temp,delim,beg);
         fill_sb(student_book.surname,temp,delim,beg);
@@ -86,6 +90,9 @@ void create_bin_marks(const std::string& stud_marks /*= "student_marks.txt"*/, c
     std::ofstream bin_out(bin_name,std::ios::binary);
     while(std::getline(fin,temp))
     {
+        if (temp.empty()){
+            continue;
+        }
         size_t beg = 0;
         fill_sb(student_marks.group,temp,delim,beg);
         fill_sb(student_marks.number,temp,delim,beg);
@@ -120,7 +127,7 @@ void add_surnames(const std::string& stud_books /*= "student_book.bin"*/,
     char delim = ';';
     std::ofstream bin_out(new_bin_name,std::ios::binary);
     //открываем и проверяем файл stud_books
-    std::ifstream fin1(stud_books);
+    std::ifstream fin1(stud_books, std::ios::binary);
     file_exists(stud_books);
     if(is_empty(stud_books))
     {
@@ -128,7 +135,7 @@ void add_surnames(const std::string& stud_books /*= "student_book.bin"*/,
     }
     check_stream(fin1,stud_books);
     //открываем и проверяем файл stud_marks
-    std::ifstream fin2(stud_marks);
+    std::ifstream fin2(stud_marks, std::ios::binary);
     file_exists(stud_marks);
     if(is_empty(stud_marks))
     {
@@ -139,6 +146,9 @@ void add_surnames(const std::string& stud_books /*= "student_book.bin"*/,
     std::string temp_books = "";
     while(std::getline(fin1,temp_books))
     {
+        if (temp_books.empty()){
+            continue;
+        }
         Student_data data;
         if(temp_books == ""){continue;}
         size_t beg = temp_books.find_first_of(delim);
@@ -522,9 +532,9 @@ void med_score_sort(const std::string& filename, uint32_t size){
 //Функция формирования ведомости по среднему баллу(убывание) для заданной группы
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_sorted_stats(const std::string& stud_avg /* = "average_score.bin"*/, 
-                    const std::string& new_bin_name /*= "stats_sort_score.bin"*/,
-                        size_t group_number){
+void create_sorted_stats(size_t group_number,
+                    const std::string& stud_avg /* = "average_score.bin"*/, 
+                    const std::string& new_bin_name /*= "stats_sort_score.bin"*/){
     file_exists(stud_avg);
 
     std::ofstream fout(new_bin_name, std::ios::binary);
