@@ -76,7 +76,8 @@ void create_bin_marks(const std::string& stud_marks = "student_marks.txt",
 //Пользователь передает имя файлов с зачетками и оценками и имена 2-х новых файлов
 void create_bin(const std::string& stud_books = "student_book.txt", 
                 const std::string& stud_marks = "student_marks.txt", 
-                const std::string& bin_name_book = "student_book.bin", const std::string& bin_name_mark = "student_mark.bin");
+                const std::string& bin_name_book = "student_book.bin", 
+                const std::string& bin_name_mark = "student_mark.bin");
 
 
 //Функция подсоединения фамилий студентов к их оценкам
@@ -129,9 +130,9 @@ void alphabet_sort(const std::string& filename, uint32_t size);
 //Функция формирования ведомости по алфавиту
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_stats(const std::string& stud_data  = "students_data.bin", 
-                const std::string& new_bin_name = "stats_sort_lex.bin",
-                size_t group_number);
+void create_stats(size_t group_number,
+                const std::string& stud_data  = "students_data.bin", 
+                const std::string& new_bin_name = "stats_sort_lex.bin");
 
 //Компаратор по среднему баллу
 int score_comp(const void* a, const void* b);
@@ -142,9 +143,9 @@ void med_score_sort(const std::string& filename, uint32_t size);
 //Функция формирования ведомости по среднему баллу(убывание)
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_sorted_stats(const std::string& stud_avg = "average_score.bin", 
-                        const std::string& new_bin_name = "stats_sort_score.bin",
-                        size_t group_number);
+void create_sorted_stats(size_t group_number,
+                        const std::string& stud_avg = "average_score.bin", 
+                        const std::string& new_bin_name = "stats_sort_score.bin");
 
 
 

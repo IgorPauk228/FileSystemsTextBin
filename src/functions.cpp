@@ -454,9 +454,9 @@ void alphabet_sort(const std::string& filename, uint32_t size){
 //Функция формирования ведомости по алфавиту для группы
 //Формируется новый файл(пользователь сам выбирает название)  
 //Аргументы функции - название бинарника зачетками и оценками и фамилиями, название нового файла
-void create_stats(const std::string& stud_data /* = "students_data.bin"*/, 
-                const std::string& new_bin_name /*= "stats_sort_lex.bin"*/,
-                size_t group_number){
+void create_stats(size_t group_number,
+                const std::string& stud_data /* = "students_data.bin"*/, 
+                const std::string& new_bin_name /*= "stats_sort_lex.bin"*/){
     file_exists(stud_data);
     std::ofstream fout(new_bin_name, std::ios::binary);
     std::ifstream fin(stud_data, std::ios::binary);
