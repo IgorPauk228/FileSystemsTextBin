@@ -341,7 +341,7 @@ void print_norm_sort(const std::string& und_data, const std::string& sort_und_da
 
                 std::cout << num++ << ". " << book.surname << " " << book.name << " " << book.second_name
                     << " | Зач. книжка: " << book.number
-                    << " | Группа: " << marks.groop << '\n';
+                    << " | Группа: " << marks.group << '\n';
                 std::cout << "   Оценки: ";
                 for (size_t i = 0; i < 3; ++i) {
                     std::cout << marks.subj[i] << ": " << marks.marks[i] << "  ";
@@ -357,6 +357,13 @@ void print_norm_sort(const std::string& und_data, const std::string& sort_und_da
         std::cout << '\n' << '\t' << "ОТСОРТИРОВАННЫЙ список по неуспеваемости" << '\t' << '\n';
 }
 
+//Лексикографический компаратор
+int alphabet_comp(const void* a, const void* b){
+    Student_data pa = *(const Student_data*)(a);
+    Student_data pb = *(const Student_data*)(b);
+    return std::strcmp(pa.surname, pb.surname);
+}
+
 //Сортировка бинарника группы по алфавиту
 void alphabet_sort(const std::string& filename, uint32_t size){
     file_exists(filename);
@@ -369,14 +376,11 @@ void alphabet_sort(const std::string& filename, uint32_t size){
     Student_data* std_arr = new Student_data[size];
     Student_data std_data;
 
-        if (!is_empty(sort_und_data)) {
-            std::ifstream fin2;
-            fin2.open(sort_und_data, std::ios::binary);
-            check_stream(fin2, sort_und_data);
-
-            Student_book book;
-            Student_book_marks marks;
-            int num = 1;
+    uint32_t counter = 0;
+    
+    while (fin.read(reinterpret_cast<char*>(&std_data), sizeof(Student_data)) && counter < size){
+        std_arr[counter++] = std_data;
+    }
 
     qsort(std_arr, size, sizeof(Student_data), alphabet_comp);
 
