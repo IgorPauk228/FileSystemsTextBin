@@ -31,4 +31,10 @@ void check_stream(std::ifstream& fin, const std::string& filename);
 //Проверка потока(ofstream)
 void check_stream(std::ofstream& fin, const std::string& filename);
 
+// Проверяет наличие расширения .txt в конце строки.
+void check_and_add_txt_extension(std::string& filename);
+
+// Проверяет наличие расширения .bin в конце строки.
+void check_and_add_bin_extension(std::string& filename);
+
 #endif
